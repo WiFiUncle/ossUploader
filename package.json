@@ -1,0 +1,17 @@
+{
+  "name": "oss",
+  "version": "1.0.0",
+  "description": "结合百度webuploader上传插件前端页面改造阿里云oss上传",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "keywords": [
+    "百度",
+    "webuploader"
+    "阿里云",
+    "oss",
+  ],
+  "author": "WiFi_Uncle",
+  "license": "ISC"
+}
