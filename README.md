@@ -47,5 +47,5 @@ https://github.com/fex-team/webuploader
 https://github.com/ali-sdk/ali-oss
 
 群名称：ossUploader
-群   号：516425821
+群   号：516425821 (加群请备注，不然直接忽略。。。)
 
