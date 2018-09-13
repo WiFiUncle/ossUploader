@@ -30,7 +30,7 @@
    若暂无后台，前端自己调测上传功能，则见4，
 ### 4. 在代码中配置好bucket、region、accessKeyId、accessKeySecret。(仅限前端自己做测试)，
 ### 然后就可以上传啦！！
-### 有问题，加群或者提issues
+
 
 # 功能 #
 - [x] 上传多个文件
