@@ -46,6 +46,7 @@ https://github.com/fex-team/webuploader
 #### 阿里云oss ### 
 https://github.com/ali-sdk/ali-oss
 
+github地址: https://github.com/WiFiUncle/ossUploader
 群名称：ossUploader
 群   号：516425821
 

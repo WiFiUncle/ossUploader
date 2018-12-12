@@ -41,8 +41,13 @@
     region: region,
     accessKeyId: accessKeyId,
     accessKeySecret: accessKeySecret,
-    bucket: bucket
+    bucket: bucket,
+    secure: true, //要是项目是走https协议的，需要加上。  具体看下面贴的几个链接
   });
+  // https://help.aliyun.com/document_detail/63401.html?#h3--https-
+  //https 上传
+  // https://bbs.aliyun.com/read/282088.html
+  //client.options.endpoint.protocol = "https:" 
   var progressBar = 0;
   var progress = '';
   var $wrap = $('#uploader'),
