@@ -10,11 +10,14 @@
  * 以上四个参数，是从后台获取的。bucket和region可以写在前台，但为了以后方便管理，建议统一从后台获取。
  * 后面两个千万不能写在js中!
  * **/
-  var bucket = 'wifi-uncle'; //前端做测试上传，先自己写死。工程中，这些找后台拿
+  // var bucket = 'wifi-uncle'; //前端做测试上传，先自己写死。工程中，这些找后台拿
+  // var region = 'oss-cn-shenzhen'; //同上
+  // var accessKeyId = '***************'; //同上
+  // var accessKeySecret = '***************'; //同上
+  var bucket = ''; //前端做测试上传，先自己写死。工程中，这些找后台拿
   var region = 'oss-cn-shenzhen'; //同上
-  var accessKeyId = '***************'; //同上
-  var accessKeySecret = '***************'; //同上
-
+  var accessKeyId = ''; //同上
+  var accessKeySecret = ''; //
   /**
   *  上传文件对象
   *  fileStats: 文件统计
@@ -29,7 +32,7 @@
           uploadFinishedFilesNum: 0,
           curFileSize: 0,
       },
-      filePath: "test/"
+      filePath: "modelData/"
   }; //上传实例对象
   var Buffer = OSS.Buffer;
   var OSS = OSS.Wrapper;
@@ -54,6 +57,8 @@
           // 图片容器
       $queue = $( '<ul class="filelist"></ul>' ).appendTo( $wrap.find( '.queueList' ) ),
       $totalProgressbar = $("#totalProgressBar");
+  var FOLDER = 'folder';
+  var uploadType = '';//上传类型
 /**
  * 方法二:
  * 实际生产中，用这个。
@@ -91,6 +96,9 @@
       done();
     }
   };
+  function getUploadFilePath () {
+      	return $("#uploadFilePath").val() || "/";
+  }
   /**
    *  TODO 下载OSS中文件的流程:
    *  1. 创建个client对象
@@ -123,57 +131,78 @@
     };
   }
   OssUpload.prototype = {
-    constructor: OssUpload,
-    // 绑定事件
-    bindEvent: function () {
-      var _this = this;
-      $("#chooseFile, #addBtn").click(function () {
-        $('#js-file').off('change').on('change', function (e) {
-            var files = e.target.files;
-            var curIndex = uploader.fileList.length; //插件中已有的文件长度，追加
-            var length = files.length;
-            var file = null;
-            $('#uploader .placeholder').hide();
-            $("#statusBar").show();
-            for (var i = 0; i < length; i++) {
-                file = files[i];
-                uploader.fileList[curIndex + i] = file;
-                file.id = uploader.fileList[curIndex + i].id = "WU_LI_" + (curIndex + i + 1); //给每个文件加id
-                uploader.fileStats.totalFilesSize += file.size; //统计文件大小
-                _this.addFile(file); //添加到控件视图中
+      constructor: OssUpload,
+      // 绑定事件
+      bindEvent: function () {
+          var _this = this;
+          $("#chooseFile, #addBtn, #chooseFolder").click(function () {
+            var $this = $(this);
+            uploadType =$this.attr("data-type")
+            if( uploadType == FOLDER) {
+                document.getElementById("addDirectory").click();
+            } else {
+                document.getElementById("js-file").click();
             }
-            uploader.fileStats.totalFilesNum = uploader.fileList.length;
-        });
-        setTimeout(function () {
-            $('#js-file').click();
-        }, 0);
-        return false;
-      });
-      $("#startUpload").click(function () {
-        var length = uploader.fileStats.totalFilesNum;
-        var filePath = uploader.filePath;//可以自行调整上传位置
-        var file;
-        for(var i = 0; i < length; i++) {
-          file = uploader.fileList[i];
-            _this.uploadFile(file, filePath);
-        }
+          });
+          $('#js-file,#addDirectory').change(function (e) {
+              var files = e.target.files;
+              var curIndex = uploader.fileList.length; //插件中已有的文件长度，追加
+              var length = files.length;
+              var file = null;
+              $('#uploader .placeholder').hide();
+              $("#statusBar").show();
+              for (var i = 0; i < length; i++) {
+                  file = files[i];
+                  uploader.fileList[curIndex + i] = file;
+                  file.id = uploader.fileList[curIndex + i].id = "WU_LI_" + (curIndex + i + 1); //给每个文件加id
+                  uploader.fileStats.totalFilesSize += file.size; //统计文件大小
+                  _this.addFile(file); //添加到控件视图中
+              }
+              uploader.fileStats.totalFilesNum = uploader.fileList.length;
+          });
 
-      });
-      $(".queueList .filelist").delegate('li span.cancel', 'click', function () {
-        var $this = $(this);
-        var $li = $this.parent().parent();
-        var id = $li.attr('id');
-        var list = uploader.fileList;
-        var len = list.length;
-        for(var i = 0; i < len; i ++) {
-          if(uploader.fileList[i].id == id) {
-            uploader.fileList.splice(i, 1); //从文件列表中删除文件
-            break ;
+          $("#startUpload").click(function () {
+            var length = uploader.fileStats.totalFilesNum;
+            var filePath = getUploadFilePath();//uploader.filePath;//可以自行调整上传位置
+            var file;
+            for(var i = 0; i < length; i++) {
+              file = uploader.fileList[i];
+                _this.uploadFile(file, filePath);
+            }
+
+          });
+          $(".queueList .filelist").delegate('li span.cancel', 'click', function () {
+            var $this = $(this);
+            var $li = $this.parent().parent();
+            var id = $li.attr('id');
+            var list = uploader.fileList;
+            var len = list.length;
+            for(var i = 0; i < len; i ++) {
+              if(uploader.fileList[i].id == id) {
+                uploader.fileList.splice(i, 1); //从文件列表中删除文件
+                break ;
+              }
+            }
+            $li.remove();
+          });
+      },      
+      /**
+       * 获取文件所在文件夹名
+       *
+       * @param file
+       */
+      getParentDirName: function (file) {
+          var filePath = '';
+          var parentDir = '';
+          if (file.webkitRelativePath) {
+              filePath = file.webkitRelativePath.split("/");
+              parentDir = filePath[filePath.length - 2 ] + '/';
+          } else {
+              alert("目前浏览器不支持webkitRelativePath");
+              //return false;
           }
-        }
-        $li.remove();
-      });
-    },
+          return parentDir;
+      },
       /***
        *  上传文件
        * @param file 需要上传的文件
@@ -183,7 +212,11 @@
     uploadFile: function (file, filePath) {
       var client;
       var total = 0;
+      if( uploadType != FOLDER) {
           filePath += file.name;
+      } else { //上传文件夹
+          filePath = filePath + this.getParentDirName(file) + file.name;
+      }
       client = applyTokenDo();
           client.multipartUpload(filePath, file, {
             progress: progress

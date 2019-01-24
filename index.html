@@ -4,9 +4,10 @@
   <meta charset="utf-8">
   <title>OSS uploader</title>
   <link rel="stylesheet" href="./css/reset.css" /> 
-  <link rel="stylesheet" href="./css/oosUploadStyle.css" />
+  <link rel="stylesheet" href="./css/ossUploadStyle.css" />
 </head>
 <body>
+		
   <div id="wrapper">
       <div id="container">
           <div id="uploader">
@@ -14,6 +15,9 @@
                   <div id="dndArea" class="placeholder">
                       <div class="" id="uploaderPick">
                         <a id="chooseFile" href="javascript:void(0);" class="text">点击选择文件</a>
+                      </div>
+                      <div class="add-btn" id="chooseFolder" data-type="folder">
+                        <a href="javascript:void(0);" class="text">选择文件夹</a>
                       </div>
                   </div> 
               </div>
@@ -42,9 +46,14 @@
           </div>
       </div>
   </div>
+  <div style="margin-left: 50px">
+		<h1>输入指定路径</h1>
+	    <input id="uploadFilePath" type="text" value="" placeholder="请以/结尾">
+	<div>
   <div class="container bs-docs-container">
       <form id="form">
-          <input id="js-file" type="file" style="display:none;"  multiple="multiple"/>
+          <input id="js-file" type="file"  style="display:none;" multiple="multiple"/>
+          <input id="addDirectory" type="file" style="display:none;" multiple="multiple" webkitdirectory="webkitdirectory">
       </form>
   </div>
   <script src="./js/jquery-2.2.4.min.js"></script>
